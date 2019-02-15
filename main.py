@@ -26,22 +26,19 @@ def main():
 
 
 def tesseract_orc_to_file(img):
-    text = image_to_string(img, lang='kor')
+    cv2.imshow('r',img)
+    cv2.waitKey()
+    text = image_to_string(img, lang='eng')
     print(text) # debug
-    with open('result\\foo.txt', "w") as f:
-        f.write(text)
 
 
 def select_freset(op, img):
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    if op < 7:
+    _, img = cv2.threshold(gray, int(th_op['threshVal'][op]),
+                           int(th_op['threshMax'][0]),
+                           cv2.THRESH_BINARY_INV if op % 2 else cv2.THRESH_BINARY)
+    if op>10 and op<5 and op!=0:
         gray = cv2.bilateralFilter(gray, int(bil_op[0]), int(bil_op[1]), int(bil_op[2]))
-        _, img = cv2.threshold(gray, int(th_op['threshVal'][op % 3]),
-                               int(th_op['threshMax'][0]), cv2.THRESH_BINARY_INV if op % 2 else cv2.THRESH_BINARY)
-    elif op < 13:
-        _, img = cv2.threshold(gray, int(th_op['threshVal'][op % 3]),
-                               int(th_op['threshMax'][0]),
-                               cv2.THRESH_BINARY_INV if op % 2 else cv2.THRESH_BINARY)
     tesseract_orc_to_file(img)
 
 

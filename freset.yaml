@@ -1,0 +1,22 @@
+bilateralFilterData:
+  - 9
+  - 75
+  - 75
+
+thresholdData:
+  threshVal:
+    - 127
+    - 30
+    - 30
+    - 255
+    - 30
+    - 30
+    - 30
+    - 255
+    - 255
+    - 98
+    - 98
+    - 98
+    - 98
+  threshMax:
+    - 255
