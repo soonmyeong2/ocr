@@ -61,9 +61,8 @@ def tesseract_boxes(img):
 
     for letter in letters:
         cv2.rectangle(img, (int(letter[1]), h - int(letter[2])), (int(letter[3]), h - int(letter[4])), (0,0,255), 1)
-
-    cv2.imshow('', img)
-    cv2.waitKey()
+     
+    return img
 
 
 def select_freset(op, img):
@@ -77,6 +76,7 @@ def select_freset(op, img):
 
 def default_freset(op, noise, boxes, img):
 
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     #debug
     cv2.imshow('ori', img)
     cv2.waitKey()
@@ -104,15 +104,25 @@ def default_freset(op, noise, boxes, img):
   
     #debug
     flag = -1
-    for img, y in text_img:
-        cv2.imshow('', img)
-        cv2.waitKey()
-        #if flag <= y+1 and flag >= y-1:
-        #    tesseract_ocr(img, True)
-        #else:
-        #    tesseract_ocr(img)
-        #tesseract_boxes(img)
+    for t_img, y, x in text_img:
+        #cv2.imshow('', t_img)
+        #cv2.waitKey()
+        if flag <= y+1 and flag >= y-1:
+            tesseract_ocr(t_img, True)
+        else:
+            tesseract_ocr(t_img)
+        
+        if boxes: 
+            b_img = tesseract_boxes(t_img)
+            h, w = t_img.shape[:2]
+            gray[y*2:y*2+h, x*2:x*2+w] = b_img
         flag = y
+
+    #debug
+    if boxes:
+        cv2.imshow('origin', tesseract_boxes(img))
+        cv2.imshow('result', gray)
+        cv2.waitKey()
         
 if __name__ == "__main__":
     main()

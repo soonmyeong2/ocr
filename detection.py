@@ -21,7 +21,7 @@ class TextDetection:
 
 				_, bw = cv2.threshold(grad, 0.0, 255.0, cv2.THRESH_BINARY | cv2.THRESH_OTSU)
 
-				kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (6, 1))
+				kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 1))
 				connected = cv2.morphologyEx(bw, cv2.MORPH_CLOSE, kernel)
 				# using RETR_EXTERNAL instead of RETR_CCOMP / EXTERNAL
 				# Switch to RETR_CCOMP using NMS
@@ -51,7 +51,7 @@ class TextDetection:
 						
 						if cv2.mean(crop_img)[0] < 128:
 								crop_img = cv2.bitwise_not(crop_img)	
-						self.text_img.append([crop_img, y])
+						self.text_img.append([crop_img, y, x])
 	
 				cv2.imshow('det', temp_img) # gray scale binary img
 				cv2.waitKey()
