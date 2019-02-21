@@ -1,9 +1,16 @@
 from pytesseract import image_to_string
-import argparse
-import cv2
+from pytesseract import image_to_boxes
 from pathlib import Path
+import argparse
 import os.path
 import yaml
+import cv2
+
+
+from preprocessing import Preprocessing
+from detection import TextDetection
+from deskew import Deskew
+
 
 doc = yaml.load(open('freset.yaml', 'r'))
 bil_op = doc["bilateralFilterData"]
@@ -13,34 +20,99 @@ th_op = doc["thresholdData"]
 def main():
     parser = argparse.ArgumentParser(description='OCR program')
     parser.add_argument('img_file', type=str, help="Input Image File Name")
-    parser.add_argument('--op', type=int,
+    parser.add_argument('-o', '--option', type=int,
                         help="Input option number to 0 ~12", default=0)
-    parser.add_argument('--engine', type=str,
-                        help="Select engine to Google-Vision and Tessreact")
+    #parser.add_argument('-e', '--engine', type=str,
+    #                    help="Select engine to Google-Vision and Tessreact")
+    parser.add_argument('--natural', action='store_true', help='option for natural image')
+    parser.add_argument('--noise', action='store_true', help='option for natural image')
+    parser.add_argument('--text_boxes', action='store_true', help='display tesseract char detection')
+    
     args = parser.parse_args()
 
     direct = Path(os.path.expanduser('~'))
-    file_path = direct / 'Desktop' / args.img_file
+    file_path = direct / args.img_file
     img = cv2.imread(str(file_path))
-    select_freset(args.op, img)
+    
+    print(" #pirnt image file path : " + str(file_path)) 
+    
+    if args.option:
+        select_freset(args.option, img)
+    else:
+        default_freset(args.natural, args.noise, args.text_boxes, img)
 
 
-def tesseract_orc_to_file(img):
-    cv2.imshow('r',img)
+def tesseract_ocr(img, lined=False):
+    text = image_to_string(img, lang='kor+eng')
+    if text:
+        if lined:
+            print(text),
+        else:
+            print(text) # debug
+
+
+def tesseract_boxes(img):
+    h, w = img.shape[:2]
+
+    ## ------- result stdout and detection text boxing
+    letters = image_to_boxes(img)
+    letters = letters.split('\n')
+    letters = [letter.split() for letter in letters]
+
+    for letter in letters:
+        cv2.rectangle(img, (int(letter[1]), h - int(letter[2])), (int(letter[3]), h - int(letter[4])), (0,0,255), 1)
+
+    cv2.imshow('', img)
     cv2.waitKey()
-    text = image_to_string(img, lang='eng')
-    print(text) # debug
 
 
 def select_freset(op, img):
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    _, img = cv2.threshold(gray, int(th_op['threshVal'][op]),
+    _, img = cv2.threshold(img, int(th_op['threshVal'][op]),
                            int(th_op['threshMax'][0]),
                            cv2.THRESH_BINARY_INV if op % 2 else cv2.THRESH_BINARY)
-    if op>10 and op<5 and op!=0:
+    if op>10 and op<5:
         gray = cv2.bilateralFilter(gray, int(bil_op[0]), int(bil_op[1]), int(bil_op[2]))
-    tesseract_orc_to_file(img)
+    tesseract_ocr(img)
 
 
+def default_freset(op, noise, boxes, img):
+
+    #debug
+    cv2.imshow('ori', img)
+    cv2.waitKey()
+    
+    pcs_obj = Preprocessing(img)
+    if op: 
+        pcs_img = pcs_obj.natural_img_processing(noise)
+    else:
+        pcs_img = pcs_obj.digital_img_processing()
+
+    #debug
+    cv2.imshow('pre', pcs_img)
+    cv2.waitKey()        
+
+    skew_obj = Deskew(pcs_img)
+    skew_img = skew_obj.run()
+
+    #debug
+    cv2.imshow('skew', skew_img)
+    cv2.waitKey()        
+
+
+    tdt_obj = TextDetection(skew_img, img)
+    text_img = tdt_obj.detection()
+  
+    #debug
+    flag = -1
+    for img, y in text_img:
+        cv2.imshow('', img)
+        cv2.waitKey()
+        #if flag <= y+1 and flag >= y-1:
+        #    tesseract_ocr(img, True)
+        #else:
+        #    tesseract_ocr(img)
+        #tesseract_boxes(img)
+        flag = y
+        
 if __name__ == "__main__":
     main()
