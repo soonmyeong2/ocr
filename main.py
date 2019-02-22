@@ -107,6 +107,7 @@ def default_freset(op, noise, boxes, img):
     for t_img, y, x in text_img:
         #cv2.imshow('', t_img)
         #cv2.waitKey()
+        t_img = cv2.copyMakeBorder(t_img, 10, 10, 10, 10, cv2.BORDER_CONSTANT, value=[255,255,255])
         if flag <= y+1 and flag >= y-1:
             tesseract_ocr(t_img, True)
         else:
