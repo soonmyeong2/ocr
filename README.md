@@ -1,11 +1,11 @@
-## ÆÄÀÏ ½ÇÇà ¹æ¹ı
+## íŒŒì¼ ì‹¤í–‰ ë°©ë²•
 
 ```
-CMD > ½ÇÇàÆÄÀÏ img [--op optionNumber] [--engine engineOption] 
+$ python main.py imgPath [--op optionNumber] [--engine engineOption] 
 ```
-* optionÀº 1~12±îÁö ÀÖÀ¸¸ç ÃÖÀûÀÇ °á°ú°¡ ³ª¿À´Â °ÍÀ» ¼±ÅÃ, default´Â 0 
-* ÀÌ¹ÌÁö preprocessingÀº À§ÀÇ ¸Ş¼Òµå¸¦ ÀÌ¿ëÇØ ¿î¿ëµÇ°í ÀÖ´Â ¸ğµâ°ª°ú °°À½.
-* engineÀº ÃßÈÄ google visionÀ» ÀÌ¿ë ÇÒ °æ¿ì¸¦ ´ëºñ,,
+* optionì€ 1~12ê¹Œì§€ ìˆìœ¼ë©° ìµœì ì˜ ê²°ê³¼ê°€ ë‚˜ì˜¤ëŠ” ê²ƒì„ ì„ íƒ, defaultëŠ” 0 
+* ì´ë¯¸ì§€ preprocessingì€ ìœ„ì˜ ë©”ì†Œë“œë¥¼ ì´ìš©í•´ ìš´ìš©ë˜ê³  ìˆëŠ” ëª¨ë“ˆê°’ê³¼ ê°™ìŒ.
+* engineì€ ì¶”í›„ google visionì„ ì´ìš© í•  ê²½ìš°ë¥¼ ëŒ€ë¹„,,
 
  ## Dependencies Libraries
  
@@ -14,7 +14,7 @@ CMD > ½ÇÇàÆÄÀÏ img [--op optionNumber] [--engine engineOption]
  pytesseract v0.2.6
  ```
 
-## ÇØ¾ßÇÒ ÀÏ
+## í•´ì•¼í•  ì¼
 
-text¿¡¼­ ÇÑ±Û / ¿µ¾î ºĞ¸®
-ÆùÆ® training
+textì—ì„œ í•œê¸€ / ì˜ì–´ ë¶„ë¦¬
+í°íŠ¸ training
