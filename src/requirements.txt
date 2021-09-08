@@ -2,7 +2,7 @@ matplotlib==2.2.3
 numpy==1.16.1
 opencv-python==4.0.0.21
 pathlib==1.0.1
-Pillow==5.4.1
+Pillow==8.3.2
 pytesseract==0.2.6
 PyYAML==3.13
 scipy==1.2.1
